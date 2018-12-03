@@ -76,3 +76,5 @@ SourceArt/**/*.tga
 BuildingEscape/Content/StarterContent/*
 
 !BuildingEscape/Content/StarterContent/Props
+
+!BuildingEscape/Content/StarterContent/Materials
