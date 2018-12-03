@@ -74,3 +74,5 @@ SourceArt/**/*.tga
 */DerivedDataCache/*
 
 BuildingEscape/Content/StarterContent/*
+
+!BuildingEscape/Content/StarterContent/Props
