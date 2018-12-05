@@ -63,6 +63,7 @@ void UGrabber::Grab() {
 
 		auto ComponentToGrab = HitResult.GetComponent(); // gets the mesh in our case
 
+		if (!PhysicsHandle) { return; }
 		// if we hit something, attach a physics handle
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
@@ -74,6 +75,7 @@ void UGrabber::Grab() {
 }
 
 void UGrabber::Release() {
+	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();	
 }
 
@@ -82,13 +84,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!PhysicsHandle) { return; }
+
 	// if the physics handle is attached
 	if (PhysicsHandle->GrabbedComponent) {
-
 		// move the object we are holding
 		PhysicsHandle->SetTargetLocation(GetLineTracePoints().v2);
-	}
-	
+	}	
 }
 
 FTwoVectors UGrabber::GetLineTracePoints() const
