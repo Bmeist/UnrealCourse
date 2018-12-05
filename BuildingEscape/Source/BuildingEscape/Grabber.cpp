@@ -32,12 +32,9 @@ void UGrabber::BeginPlay()
 /// Look for attached PhysicsHandle
 void UGrabber::FindPhysicsHandleComponent() {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle) {
-		//physics handle found!
-	}
-	else {
+	if (PhysicsHandle == nullptr) {
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle not found on %s"), *GetOwner()->GetName());
-	}
+	}	
 }
 
 /// Look for InputComponent
@@ -45,13 +42,10 @@ void UGrabber::SetupInputComponent() {
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent) {
 		UE_LOG(LogTemp, Warning, TEXT("InputComponent FOUND on %s"), *GetOwner()->GetName());
-
 		/// Bind the grab input Action
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-
 		/// Bind the release input Action
 		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
-
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("InputComponent NOT found on %s"), *GetOwner()->GetName());
@@ -59,8 +53,6 @@ void UGrabber::SetupInputComponent() {
 }
 
 void UGrabber::Grab() {
-	UE_LOG(LogTemp, Warning, TEXT("Grab pressed"));
-
 	// line trace and see if we reach any actors with physics body collision channel set
 	auto HitResult = GetFirstPhysicsBodyInReach();
 
@@ -69,24 +61,19 @@ void UGrabber::Grab() {
 	if (ActorHit) {
 		UE_LOG(LogTemp, Warning, TEXT("line trace hit %s"), *(ActorHit->GetName()));
 
-		auto ComponentToGrab = HitResult.GetComponent();
+		auto ComponentToGrab = HitResult.GetComponent(); // gets the mesh in our case
 
 		// if we hit something, attach a physics handle
-		// TODO: attach physics handle	
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
-			NAME_None,
+			NAME_None, // no bones needed
 			ComponentToGrab->GetOwner()->GetActorLocation(),
 			true //allow rotation		
 		);
 	}
-
 }
 
 void UGrabber::Release() {
-	UE_LOG(LogTemp, Warning, TEXT("Released!"));
-
-	// release physics handle
 	PhysicsHandle->ReleaseComponent();	
 }
 
@@ -98,34 +85,26 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// if the physics handle is attached
 	if (PhysicsHandle->GrabbedComponent) {
 
-		/// get player viewpoint this tick
-		FVector PlayerViewPointLocation;
-		FRotator PlayerViewPointRotation;
-		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-			OUT PlayerViewPointLocation,
-			OUT PlayerViewPointRotation
-		);
-
-		FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
 		// move the object we are holding
-		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+		PhysicsHandle->SetTargetLocation(GetLineTracePoints().v2);
 	}
 	
 }
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+FTwoVectors UGrabber::GetLineTracePoints() const
 {
-	/// get player viewpoint this tick
-	FVector PlayerViewPointLocation;
+	FVector StartLocation;
 	FRotator PlayerViewPointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation,
+		OUT StartLocation,
 		OUT PlayerViewPointRotation
 	);
+	FVector EndLocation = StartLocation + PlayerViewPointRotation.Vector() * Reach;
+	return FTwoVectors(StartLocation, EndLocation);
+}
 
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+{
 	/*
 	DrawDebugLine(
 		GetWorld(),
@@ -137,18 +116,20 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 		0.f,
 		10.0f);*/
 
-		/// Setup query parameters
-	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
-
-	/// line-trace (aka ray cast) out to reach distance
+	// line-trace (aka ray cast) out to reach distance
 	FHitResult HitResult;
+
+	// Setup query parameters
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
+	
+	FTwoVectors TracePoints = GetLineTracePoints();
+
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT HitResult,
-		PlayerViewPointLocation,
-		LineTraceEnd,
+		TracePoints.v1,
+		TracePoints.v2,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParams
 	);
-
 	return HitResult;
 }

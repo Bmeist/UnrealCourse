@@ -26,7 +26,9 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	float GetTotalMassOfActorsOnPlate();
+
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -40,8 +42,6 @@ private:
 	float DoorCloseDelay = 0.8f;
 
 	float LastDoorOpenTime;
-
-	AActor* ActorThatOpens;
 
 	AActor* Owner; //The owning door
 };
