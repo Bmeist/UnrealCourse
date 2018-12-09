@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "OpenDoor.h"
+#include "DoorEvent.h"
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/Actor.h"
@@ -10,7 +10,7 @@
 #define OUT
 
 // Sets default values for this component's properties
-UOpenDoor::UOpenDoor()
+UDoorEvent::UDoorEvent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -21,7 +21,7 @@ UOpenDoor::UOpenDoor()
 
 
 // Called when the game starts
-void UOpenDoor::BeginPlay()
+void UDoorEvent::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();	
@@ -31,36 +31,20 @@ void UOpenDoor::BeginPlay()
 	}
 }
 
-void UOpenDoor::OpenDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-}
-
-void UOpenDoor::CloseDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, CloseAngle, 0.0f));
-}
-   
-
 // Called every frame
-void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UDoorEvent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 		
 	// Poll the Trigger Volume
-	if (GetTotalMassOfActorsOnPlate() > 100.f) {		// TODO make a parameter
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass) {		// TODO make a parameter
+		OnOpen.Broadcast();
+	} else {
+		OnClose.Broadcast();
 	}	
-
-	// Check if it's time to close the door
-	if ((LastDoorOpenTime + DoorCloseDelay) < GetWorld()->GetTimeSeconds()) {
-		CloseDoor();
-	}
-	
 }
 
-float UOpenDoor::GetTotalMassOfActorsOnPlate() {
+float UDoorEvent::GetTotalMassOfActorsOnPlate() {
 	
 	float TotalMass = 0.f;
 
