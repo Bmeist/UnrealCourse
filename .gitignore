@@ -73,8 +73,9 @@ SourceArt/**/*.tga
 # Cache files for the editor to use
 */DerivedDataCache/*
 
-BuildingEscape/Content/StarterContent/*
-
+*/Content/StarterContent/*
 !BuildingEscape/Content/StarterContent/Props
-
 !BuildingEscape/Content/StarterContent/Materials
+
+!BattleTank/Content/StarterContent/Props
+!BattleTank/Content/StarterContent/Materials
