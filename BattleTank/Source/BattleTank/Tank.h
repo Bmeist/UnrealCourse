@@ -36,7 +36,7 @@ public:
 
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
-
+	
 private:		
 
 	// Called to bind functionality to input
@@ -50,4 +50,8 @@ private:
 
 	// local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr;
+
+	float ReloadTimeInSeconds = 3;
+
+	double LastFireTime = 0;
 };

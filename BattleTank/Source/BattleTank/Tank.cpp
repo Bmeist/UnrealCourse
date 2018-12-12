@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 
 // Sets default values
@@ -23,15 +24,20 @@ void ATank::BeginPlay()
 
 void ATank::Fire() 
 {
-	if (!Barrel) { return;}
+	//FPlatformTime::Seconds
+	bool isReloaded = (UGameplayStatics::GetRealTimeSeconds(GetWorld()) - LastFireTime) > ReloadTimeInSeconds;
 
-	UE_LOG(LogTemp, Warning, TEXT("Tank fired!"));
+	if (Barrel && isReloaded)
+	{
+		/// Spawn projectile at socket location on the barrel
 
-	// Spawn projectile at socket location on the barrel
+		const FVector& Location = Barrel->GetSocketLocation(FName("Projectile"));
+		const FRotator& Rotation = Barrel->GetSocketRotation(FName("Projectile"));
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation, FActorSpawnParameters());
 
-	const FVector& Location = Barrel->GetSocketLocation(FName("Projectile"));
-	const FRotator& Rotation = Barrel->GetSocketRotation(FName("Projectile"));
-	GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation, FActorSpawnParameters());
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	}
 }
 
 void ATank::AimAt(FVector HitLocation) 
