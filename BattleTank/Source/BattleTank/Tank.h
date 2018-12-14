@@ -9,6 +9,7 @@
 class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
+class UTankMovementComponent;
 class AProjectile;
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = Input)
+	void IntendMoveForward(float Throw);
+
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
@@ -36,6 +40,9 @@ public:
 
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 	
 private:		
 

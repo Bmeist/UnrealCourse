@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 
@@ -38,6 +39,11 @@ void ATank::Fire()
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 	}
+}
+
+void ATank::IntendMoveForward(float Throw)
+{
+	TankMovementComponent->IntendMoveForward(Throw);
 }
 
 void ATank::AimAt(FVector HitLocation) 

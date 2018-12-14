@@ -8,16 +8,6 @@
 void ATankPlayerController::BeginPlay() 
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Player controller begin play"));
-
-	ATank* ControlledTank = GetControlledTank();
-	if (!ControlledTank) {
-		UE_LOG(LogTemp, Warning, TEXT("No controlled tank found"));
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("GetPawn returned %s"), *GetPawn()->GetName());
-	}
-	
 }
 
 void ATankPlayerController::Tick(float deltaTime) {
