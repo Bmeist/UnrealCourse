@@ -4,7 +4,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 
@@ -17,10 +16,11 @@ ATank::ATank()
 
 void ATank::Fire() 
 {
+	if (!ensure(Barrel)) { return; }
 	//FPlatformTime::Seconds
 	bool isReloaded = (UGameplayStatics::GetRealTimeSeconds(GetWorld()) - LastFireTime) > ReloadTimeInSeconds;
 
-	if (Barrel && isReloaded)
+	if (isReloaded)
 	{
 		/// Spawn projectile at socket location on the barrel
 
@@ -40,7 +40,7 @@ void ATank::IntendMoveForward(float Throw)
 
 void ATank::AimAt(FVector HitLocation) 
 {
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
