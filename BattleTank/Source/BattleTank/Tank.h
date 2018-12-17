@@ -20,6 +20,8 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
+	virtual void BeginPlay() override;
+
 	void AimAt(FVector HitLocation);
 
 	UFUNCTION(BlueprintCallable)
@@ -40,10 +42,11 @@ private:
 
 	// Called to bind functionality to input
 	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint = nullptr;
 
+	// TODO remove once firing is moved
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	float LaunchSpeed = 4000;  //starting value in m/s
 	

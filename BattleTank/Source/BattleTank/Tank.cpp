@@ -14,6 +14,13 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
+}
+
 void ATank::Fire() 
 {
 	if (!ensure(Barrel)) { return; }
@@ -35,7 +42,7 @@ void ATank::Fire()
 
 void ATank::IntendMoveForward(float Throw)
 {
-	TankMovementComponent->IntendMoveForward(Throw);
+	//TankMovementComponent->IntendMoveForward(Throw);
 }
 
 void ATank::AimAt(FVector HitLocation) 

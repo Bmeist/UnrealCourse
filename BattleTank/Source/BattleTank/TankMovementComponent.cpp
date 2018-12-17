@@ -27,8 +27,8 @@ void UTankMovementComponent::IntendMoveForward(float Throw)
 {
 	if (!ensure(LeftTrack && RightTrack)) { return; }
 
-	auto Name = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Intend move right, throw: %f"), Throw);
+	//auto Name = GetName();
+	//UE_LOG(LogTemp, Warning, TEXT("Intend move right, throw: %f"), Throw);
 
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
