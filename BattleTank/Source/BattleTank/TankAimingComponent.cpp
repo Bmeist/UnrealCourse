@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -21,7 +22,7 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!ensure(Barrel)) { return; }
 
@@ -56,9 +57,29 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		
 }
 
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+	//FPlatformTime::Seconds
+	bool isReloaded = (UGameplayStatics::GetRealTimeSeconds(GetWorld()) - LastFireTime) > ReloadTimeInSeconds;
+
+	if (isReloaded)
+	{
+		/// Spawn projectile at socket location on the barrel
+
+		const FVector& Location = Barrel->GetSocketLocation(FName("Projectile"));
+		const FRotator& Rotation = Barrel->GetSocketRotation(FName("Projectile"));
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation, FActorSpawnParameters());
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	}
+}
+
+
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) 
 {
-	if (!ensure(Barrel && Turret)) { return; }
+	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 	// rotate barrel to aim direction
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
