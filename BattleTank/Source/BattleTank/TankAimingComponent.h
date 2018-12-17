@@ -51,12 +51,20 @@ private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
+	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
 	// local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
-	void MoveBarrelTowards(FVector AimDirection);	
+	void MoveBarrelTowards(FVector AimDirection);
 
 	double LastFireTime = 0;
+
+	FVector AimDirection;
+
+	bool IsBarrelMoving();
 
 };
