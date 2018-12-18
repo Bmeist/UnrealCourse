@@ -101,7 +101,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 		
 }
 
-int UTankAimingComponent::GetRoundsLeft() const
+int32 UTankAimingComponent::GetRoundsLeft() const
 {
 	return CurrentAmmo;
 }

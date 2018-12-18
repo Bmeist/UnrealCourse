@@ -38,23 +38,23 @@ public:
 	EFiringStatus GetFiringStatus() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Firing"	)
-	int GetRoundsLeft() const;
+	int32 GetRoundsLeft() const;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringStatus FiringStatus = EFiringStatus::Reloading;
 
-	UPROPERTY(EditAnywhere, Category = "Firing")
-	float LaunchSpeed = 8000;  //starting value in m/s
-
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	float LaunchSpeed = 8000;  //starting value in m/s
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float ReloadTimeInSeconds = 3;
 
-	UPROPERTY(BlueprintReadOnly, Category = "State")
-	int CurrentAmmo = 3;
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	int32 CurrentAmmo = 5;
 
 private:	
 	// Sets default values for this component's properties
@@ -71,8 +71,6 @@ private:
 	void MoveBarrelTowards(FVector AimDirection);
 
 	double LastFireTime = 0;
-
-	bool HasAmmo();	
 
 	FVector AimDirection;
 
