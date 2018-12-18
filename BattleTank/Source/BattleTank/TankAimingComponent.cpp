@@ -33,7 +33,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	//UE_LOG(LogTemp, Warning, TEXT("aiming comp tick"));
-	if ((UGameplayStatics::GetRealTimeSeconds(GetWorld()) - LastFireTime) < ReloadTimeInSeconds)
+	if (CurrentAmmo <= 0)
+	{
+		FiringStatus = EFiringStatus::OutOfAmmo;
+	}
+	else if ((UGameplayStatics::GetRealTimeSeconds(GetWorld()) - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringStatus = EFiringStatus::Reloading;
 	}
@@ -41,7 +45,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	{
 		FiringStatus = EFiringStatus::Aiming;
 	}
-	else 
+	else
 	{
 		FiringStatus = EFiringStatus::Locked;
 	}
@@ -97,10 +101,15 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 		
 }
 
+int UTankAimingComponent::GetRoundsLeft() const
+{
+	return CurrentAmmo;
+}
+
 void UTankAimingComponent::Fire()
 {
 
-	if (FiringStatus != EFiringStatus::Reloading)
+	if (FiringStatus != EFiringStatus::Reloading && FiringStatus != EFiringStatus::OutOfAmmo)
 	{
 		/// Spawn projectile at socket location on the barrel
 
@@ -113,9 +122,14 @@ void UTankAimingComponent::Fire()
 
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+		CurrentAmmo--;
 	}
 }
 
+EFiringStatus UTankAimingComponent::GetFiringStatus() const
+{
+	return FiringStatus;
+}
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) 
 {
@@ -126,5 +140,14 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
+
+	// always Yaw the shortest way
+	if (FMath::Abs(DeltaRotator.Yaw) > 180) {
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
+	
 }
