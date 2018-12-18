@@ -16,6 +16,6 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-	//virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 };
