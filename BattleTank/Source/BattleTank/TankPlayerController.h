@@ -22,6 +22,9 @@ public:
 
 	virtual void Tick(float deltaTime) override;
 
+	UFUNCTION()
+	void OnDeath();
+
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimingCompRef);
@@ -46,5 +49,7 @@ private:
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
+
+	virtual void SetPawn(APawn* InPawn) override;
 
 };

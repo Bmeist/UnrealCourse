@@ -4,6 +4,7 @@
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
 #include "Engine/EngineTypes.h"
+#include "Tank.h"
 
 void ATankPlayerController::BeginPlay() 
 {
@@ -17,6 +18,25 @@ void ATankPlayerController::Tick(float deltaTime) {
 	Super::Tick(deltaTime);
 
 	AimTowardsCrosshair();
+}
+
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		auto PossesedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossesedTank)) { return; }
+
+		// Subscribe our local method to the tank's death event
+		PossesedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnDeath);
+	}
+}
+
+void ATankPlayerController::OnDeath()
+{
+	StartSpectatingOnly();
+	UE_LOG(LogTemp, Warning, TEXT("Player Controller OnDeath: Tank Died"));
 }
 
 void ATankPlayerController::AimTowardsCrosshair() {
