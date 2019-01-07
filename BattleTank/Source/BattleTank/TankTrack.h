@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrack.generated.h"
 
+class ASprungWheel;
+
 /**
  * 
  */
@@ -18,24 +20,21 @@ public:
 
 	UTankTrack();
 
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 	
 	//void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
-
-	void ApplySidewaysForce();
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetThrottle(float Throttle);
 
-	void DriveTrack();
+	void DriveTrack(float CurrentThrottle);
 	
 	// Max force per track in Newtons
 	UPROPERTY(EditDefaultsOnly)
-	float TrackMaxDrivingForce = 40000000.0;  //assume 40 ton tank and 1g acceleration
+	float TrackMaxDrivingForce = 400000.0;  //assume 40 ton tank and 1g acceleration
 
 private:
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	
+	TArray<class ASprungWheel*> GetWheels() const;
 
-	float CurrentThrottle = 0;
 };
