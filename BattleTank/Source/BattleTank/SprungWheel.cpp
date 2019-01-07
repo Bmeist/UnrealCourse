@@ -48,10 +48,12 @@ void ASprungWheel::SetupConstraint()
 void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+		
+	UE_LOG(LogTemp, Warning, TEXT("sprungwheel tick %s"), GetWorld()->TickGroup);
 
-	//UE_LOG(LogTemp, Warning, TEXT("TICK %f"), GetWorld()->GetTimeSeconds());
 	if (GetWorld()->TickGroup == TG_PostPhysics)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("settting force back to 0 %f"), GetWorld()->GetTimeSeconds());
 		TotalForceMagnitudeThisFrame = 0;
 	}
 }
