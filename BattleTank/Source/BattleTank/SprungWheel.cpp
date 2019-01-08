@@ -11,6 +11,8 @@ ASprungWheel::ASprungWheel()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickGroup = TG_PostPhysics;
 
+	//this->SetTickGroup(TG_PostPhysics);
+
 	MassWheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("MassWheelConstraint"));
 	SetRootComponent(MassWheelConstraint);
 
@@ -22,6 +24,11 @@ ASprungWheel::ASprungWheel()
 
 	AxleWheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("AxleWheelConstraint"));
 	AxleWheelConstraint->SetupAttachment(Axle);
+
+	//PrimaryComponentTick.bCanEverTick = true;
+	//PrimaryComponentTick.bTickEvenWhenPaused = true;
+	//PrimaryComponentTick.TickGroup = TG_PostPhysics;
+
 }
 
 // Called when the game starts or when spawned
@@ -48,13 +55,16 @@ void ASprungWheel::SetupConstraint()
 void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-		
-	UE_LOG(LogTemp, Warning, TEXT("sprungwheel tick %s"), GetWorld()->TickGroup);
+
+	//UE_LOG(LogTemp, Warning, TEXT("current tick group: %s"), *GETENUMSTRING("ETickingGroup", GetWorld()->TickGroup));
 
 	if (GetWorld()->TickGroup == TG_PostPhysics)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("settting force back to 0 %f"), GetWorld()->GetTimeSeconds());
+		//UE_LOG(LogTemp, Warning, TEXT("settting force back to 0 %f"), GetWorld()->GetTimeSeconds());
 		TotalForceMagnitudeThisFrame = 0;
+	}
+	else {
+		//UE_LOG(LogTemp, Warning, TEXT("current tick group: %s"), *GETENUMSTRING("ETickingGroup", GetWorld()->TickGroup));
 	}
 }
 
@@ -65,10 +75,12 @@ void ASprungWheel::AddDrivingForce(float ForceMagnitude)
 
 void ASprungWheel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("OnHit %f"), GetWorld()->GetTimeSeconds());
 	ApplyForce();
 }
 
 void ASprungWheel::ApplyForce()
 {
+	//UE_LOG(LogTemp, Warning, TEXT("adding force %f : %f"), TotalForceMagnitudeThisFrame, GetWorld()->GetTimeSeconds());
 	Wheel->AddForce(Axle->GetForwardVector() * TotalForceMagnitudeThisFrame);
 }
