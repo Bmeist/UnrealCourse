@@ -83,3 +83,5 @@ SourceArt/**/*.tga
 */Content/UltraDynamicSky/*
 
 */Content/ParagonBoris/*
+
+!TestingGrounds/Content/ParagonBoris/Characters/Heroes/Boris/BorisPlayerCharacter.uasset
