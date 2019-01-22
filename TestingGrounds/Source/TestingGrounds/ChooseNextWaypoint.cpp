@@ -7,6 +7,7 @@ EBTNodeResult::Type UChooseNextWaypoint::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	auto BlackboardComp = OwnerComp.GetBlackboardComponent();
 	auto Index = BlackboardComp->GetValueAsInt(IndexKey.SelectedKeyName);
-	UE_LOG(LogTemp, Warning, TEXT("Waypoint Index %i"), BlackboardComp.);
+	UE_LOG(LogTemp, Warning, TEXT("Waypoint Index %i"), Index);
+
 	return EBTNodeResult::Succeeded;
 }
