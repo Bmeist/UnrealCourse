@@ -81,7 +81,11 @@ SourceArt/**/*.tga
 !BattleTank/Content/StarterContent/Materials
 
 */Content/UltraDynamicSky/*
+*/Content/AncientTreasures/*
 
 */Content/ParagonBoris/*
 
 !TestingGrounds/Content/ParagonBoris/Characters/Heroes/Boris/BorisPlayerCharacter.uasset
+TestingGrounds/AncientTreasures.png
+TestingGrounds/Content/FirstPersonCPP/Maps/FirstPersonExampleMap.umap
+TestingGrounds/Content/FirstPersonCPP/Maps/FirstPersonExampleMap.umap
